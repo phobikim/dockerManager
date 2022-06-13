@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.docker.dockermanager.core.EntityMapper">
+
+    <select id="searchAll" resultType="DockerManager">
+        select * from docker_manager
+    </select>
+
+    <select id="findById" parameterType="String" resultType="DockerManager">
+        select * from docker_manager
+        where
+        docker_id = #{dockerId}
+    </select>
+
+    <update id="updateState" parameterType="DockerManager">
+        update docker_manager
+        set
+        docker_state = #{dockerState},
+        state_msg    = #{stateMsg},
+        rgst_date    = #{rgstDate}
+        where
+        docker_ip = #{dockerIp} and docker_port = #{dockerPort}
+    </update>
+
+    <update id="updateById" parameterType="hashmap">
+        update docker_manager
+        set
+        docker_name = #{dockerName},
+        docker_ip   = #{dockerIp},
+        docker_port = #{dockerPort}
+        where
+        docker_id = #{dockerId}
+    </update>
+</mapper>

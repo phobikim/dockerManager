@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 560px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="py-5 text-center">
+        <h2>Docker Detail</h2>
+    </div>
+
+
+    <div>
+        <label for="dockerName">NAME</label>
+        <input type="text" id="dockerName" name="dockerName" class="form-control" th:value="${docker.dockerName}" readonly >
+    </div>
+    <div>
+        <label for="dockerType">PORT</label>
+        <input type="text" id="dockerType" name="dockerType" class="form-control" th:value="${docker.dockerType}" readonly>
+    </div>
+    <div>
+        <label for="dockerIp">IP</label>
+        <input type="text" id="dockerIp" name="dockerIp" class="form-control" th:value="${docker.dockerIp}" readonly>
+    </div>
+    <div>
+        <label for="dockerPort">PORT</label>
+        <input type="text" id="dockerPort" name="dockerPort" class="form-control" th:value="${docker.dockerPort}" readonly>
+    </div>
+
+    <hr class="my-4">
+
+    <div class="row">
+        <div class="col">
+            <button class="w-100 btn btn-primary btn-lg"
+                    onclick="location.href='editDockerManagerForm.html'"
+                    th:onclick="|location.href='@{/dockerMain/{dockerId}/edit(dockerId=${docker.dockerId})}'|"
+                    type="button">DOCKER UPDATE</button>
+        </div>
+        <div class="col">
+            <button class="w-100 btn btn-secondary btn-lg"
+                    onclick="location.href='dockerManagerList.html'"
+                    th:onclick="|location.href='@{/dockerMain}'|"
+                    type="button">TO THE MAIN</button>
+        </div>
+    </div>
+
+</div> <!-- /container -->
+</body>
+</html>

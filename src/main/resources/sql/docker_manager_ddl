@@ -1,0 +1,13 @@
+-- docker.docker_manager definition
+
+CREATE TABLE `docker_manager` (
+  `docker_id` varchar(20) NOT NULL,
+  `docker_name` varchar(100) DEFAULT NULL,
+  `docker_type` varchar(100) DEFAULT NULL,
+  `docker_ip` varchar(100) DEFAULT NULL,
+  `docker_port` varchar(100) DEFAULT NULL,
+  `docker_state` varchar(100) DEFAULT NULL,
+  `state_msg` varchar(100) DEFAULT NULL,
+  `rgst_date` varchar(100) DEFAULT NULL,
+  PRIMARY KEY (`docker_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+<div class="container" style="max-width: 1000px">
+    <div class="py-5 text-center">
+        <h2>도커 목록</h2>
+    </div>
+    <div class="m-4 float-right">
+        <button class="btn btn-info active"
+                th:onclick="|location.href='@{/dockerMain/healthCheck}'|"
+                type="button">통신 확인</button>
+        <button class="btn btn-warning ml-2 float-right active"
+                th:onclick="|location.href='@{/swagger-ui/#/}'|"
+                type="button">SWAGGER</button>
+    </div>
+    <hr class="my-4">
+    <div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>TYPE</th>
+                <th>NAME</th>
+                <th>IP</th>
+                <th>PORT</th>
+                <th>STATE</th>
+                <th>DATE</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="docker ,stat : ${dockerMangers}">
+                <td th:text="${stat.count}"></td>
+                <td th:text="${docker.dockerType}"></td>
+                <td><a th:href="@{|/dockerMain/${docker.dockerId}|}" th:text="${docker.dockerName}">docker name</a></td>
+                <td><a th:href="@{/dockerMain/{dockerId}(dockerId=${docker.dockerId})}" th:text="${docker.dockerIp}">docker ip</a></td>
+                <td th:text="${docker.dockerPort}"></td>
+                <td th:text="${docker.stateMsg}"></td>
+                <td th:text="${docker.rgstDate}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div> <!-- /container -->
+</body>
+</html>

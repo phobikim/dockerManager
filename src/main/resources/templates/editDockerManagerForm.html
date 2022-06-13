@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <link th:href="@{/css/bootstrap.min.css}"
+        href="../css/bootstrap.min.css" rel="stylesheet">
+  <style>
+        .container {
+            max-width: 560px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="py-5 text-center">
+    <h2>Docker Detail</h2>
+  </div>
+
+<form action="dockerDetail.html" th:action th:object="${docker}" method="post">
+    <div>
+      <label for="dockerId">ID</label>
+      <input type="text" id="dockerId" th:field="*{dockerId}" class="form-control" th:value="${docker.dockerId}" readonly >
+    </div>
+    <div>
+      <label for="dockerName">NAME</label>
+      <input type="text" id="dockerName" th:field="*{dockerName}" class="form-control" th:value="${docker.dockerName}" >
+    </div>
+    <div>
+      <label for="dockerIp">IP</label>
+      <input type="text" id="dockerIp" th:field="*{dockerIp}" class="form-control" th:value="${docker.dockerIp}" >
+    </div>
+    <div>
+      <label for="dockerPort">PORT</label>
+      <input type="text" id="dockerPort" th:field="*{dockerPort}" class="form-control" th:value="${docker.dockerPort}" >
+    </div>
+    <input type="hidden"  th:field="*{dockerType}" class="form-control" th:value="${docker.dockerType}" >
+    <input type="hidden"  th:field="*{dockerState}" class="form-control" th:value="${docker.dockerState}" >
+    <input type="hidden"  th:field="*{stateMsg}" class="form-control" th:value="${docker.stateMsg}" >
+    <input type="hidden"  th:field="*{rgstDate}" class="form-control" th:value="${docker.rgstDate}" >
+
+    <hr class="my-4">
+
+    <div class="row">
+      <div class="col">
+        <div class="col">
+          <button class="w-100 btn btn-primary btn-lg" type="submit">SAVE</button>
+        </div>
+      </div>
+      <div class="col">
+        <button class="w-100 btn btn-secondary btn-lg"
+                onclick="location.href='dockerDetail.html'"
+                th:onclick="|location.href='@{/dockerMain}'|"
+                type="button">CANCLE</button>
+      </div>
+    </div>
+</form>
+
+</div> <!-- /container -->
+</body>
+</html>
