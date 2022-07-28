@@ -19,6 +19,9 @@
         <button class="btn btn-warning ml-2 float-right active"
                 th:onclick="|location.href='@{/swagger-ui/#/}'|"
                 type="button">SWAGGER</button>
+        <button class="btn btn-warning ml-2 float-right active"
+                th:onclick="|location.href='@{/api/docker/regist}'|"
+                type="button">도커 생성</button>
     </div>
     <hr class="my-4">
     <div>
@@ -31,7 +34,8 @@
                 <th>IP</th>
                 <th>PORT</th>
                 <th>STATE</th>
-                <th>DATE</th>
+                <th>REGISTER DATE</th>
+                <th>UPDATE DATE</th>
             </tr>
             </thead>
             <tbody>
@@ -43,6 +47,7 @@
                 <td th:text="${docker.dockerPort}"></td>
                 <td th:text="${docker.stateMsg}"></td>
                 <td th:text="${docker.rgstDate}"></td>
+                <td th:text="${docker.updateDate}"></td>
             </tr>
             </tbody>
         </table>

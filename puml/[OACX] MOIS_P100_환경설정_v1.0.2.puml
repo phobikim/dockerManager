@@ -1,0 +1,125 @@
+@startuml P100_환경설정
+
+'-----------------------------------------------------------
+' 설정
+'-----------------------------------------------------------
+'=== Header and Footer ===
+header 전자서명인증 중계
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>P110: 환경설정 </size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== Panticipants ===
+
+skinparam ParticipantPadding 20
+skinparam BoxPadding 20
+
+box 이용기관 #AliceBlue
+    actor spAdmin
+    'participant "**spAdmin**" as spAdmin <<administrator>>
+    participant "**spServer**" as spServer <<WAS>>
+    participant "**spSDK**" as spSDK <<SDK>> #LightBlue
+end box
+
+box 중계기관 #OldLace
+    actor oacxAdmin
+    'participant "**oacxAdmin**" as oacxAdmin <<administrator>>
+    participant "**OACXServer**" as oacxServer <<WAS>>
+end box
+    
+'-----------------------------------------------------------
+' 상수
+'-----------------------------------------------------------
+'db_enc_key
+!$defaultKey = "key<sub>default</sub>"
+
+'enc_key
+!$key_ca = "key<sub>ca</sub>"
+!$eKey_ca = "ekey<sub>ca</sub>"
+
+'access_key
+!$accKey_ca = "accesskey<sub>ac</sub>"
+
+'algorithm
+!$encAlg = "encAlgorithm<sub>ca</sub>"
+!$signAlg = "signAlgorithm<sub>ca</sub>"
+
+'CA Info
+!$targetCA = "CA<sub>target</sub>"
+!$CAList = "list<sub>ca</sub>"
+
+
+'-----------------------------------------------------------
+' 내용
+'-----------------------------------------------------------
+
+== P100-1: 이용기관 환경파일 생성 ==
+spAdmin -> spServer : set password, confirm password
+spServer -> spSDK : createWallet\n(password, salt, $targetCA, $key_ca,\n$encAlg, $signAlg)
+note left
+    <color red>$targetCA, $key_ca, $encAlg,</color>
+    <color red>$signAlg 는</color>
+    <color red>CA 수만큼 들어가야 함 </color>
+end note
+activate spSDK
+    spSDK -> spSDK : hashPwd = \npbkdf2(password, salt, sha256)
+    note left : <color red> iteration, length는 하드코딩 </color>
+    spSDK -> spSDK : $eKey_ca = \nencrypt(aes_cbc_pkcs5pad, password, $key_ca)
+    spSDK -> spSDK : $CAList = \nmake($targetCA, $eKey_ca)
+    note left : <color red> $CAList 에는 $targetCA, $key_ca 는 CA 수만큼 들어가야 함 </color>
+    spSDK -> spSDK : walletName = \ncreateWalletFile(hashPwd, salt, $CAList)
+return {walletName}
+
+|||
+
+== P100-2:이용기관 서버 구동 ==
+spAdmin -> spServer : input password
+activate spServer
+    spServer -> spSDK : init(password, walletName)
+    activate spSDK
+        spSDK -> spSDK : salt, hashPwd = read(walletName)
+        spSDK -> spSDK : hashPwd2 = pbkdf2(password, salt, sha256)
+        spSDK -> spSDK : result = compare(pashPwd, hashPwd2)
+    return {result}
+return {result}
+
+|||
+
+== P100-3: 중계기관 환경파일 생성 ==
+oacxAdmin -> oacxServer : set password, confirm password
+activate oacxServer
+    oacxServer -> oacxServer : createWallet(password, salt, $key_ca)
+    note left : <color red> $targetCA, $key_ca, $encAlg, $signAlg 는 DB로 관리 </color>
+
+    oacxServer -> oacxServer : hashPwd = \npbkdf2(password, salt, sha256)
+    note left : <color red> iteration, length는 하드코딩 </color>
+    oacxServer -> oacxServer : $eKey_ca = \nencrypt(aes_cbc_pkcs5pad, password, $key_ca)
+    oacxServer -> oacxServer : walletName = \ncreateWalletFile(hashPwd, salt)
+return {walletName, $eKey_ca}
+note left 
+    <color red>$eKey_ca 는 $targetCA, $encAlg, $signAlg 와</color>
+    <color red>함께 관리콘솔 통해 DB에 주입</color>
+end note
+|||
+
+== P100-4:중계서버 구동 ==
+oacxAdmin -> oacxServer : input password
+activate oacxServer
+    oacxServer -> oacxServer : init(password, walletName)
+    oacxServer -> oacxServer : salt, hashPwd = read(walletName)
+    oacxServer -> oacxServer : hashPwd2 = pbkdf2(password, salt, sha256)
+    oacxServer -> oacxServer : result = compare(pashPwd, hashPwd2)
+return {result}
+|||
+@enduml

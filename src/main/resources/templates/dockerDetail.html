@@ -15,36 +15,68 @@
 <div class="container">
 
     <div class="py-5 text-center">
-        <h2>Docker Detail</h2>
+        <h2>도커 상세 정보</h2>
+    </div>
+    <hr class="my-4">
+
+    <div>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>NAME</th>
+                <th>ADMIN ID</th>
+                <th>ADMIN PW</th>
+                <th>USER ID</th>
+                <th>USER PW</th>
+                <th>USER ID2</th>
+                <th>USER PW2</th>
+                <th>NOTE</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td th:text="${account.dockerId}"></td>
+                <td th:text="${account.adminId}">docker name</a></td>
+                <td th:text="${account.adminPw}">docker ip</a></td>
+                <td th:text="${account.userId}"></td>
+                <td th:text="${account.userPw}"></td>
+                <td th:text="${account.userId2}"></td>
+                <td th:text="${account.userPw2}"></td>
+                <td th:text="${account.note}"></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 
 
     <div>
-        <label for="dockerName">NAME</label>
-        <input type="text" id="dockerName" name="dockerName" class="form-control" th:value="${docker.dockerName}" readonly >
+        <label for="dockerId" style="font-weight : bold;font-size:18px;">1. 도커 이름</label>
+        <input type="text" id="dockerId" name="dockerId" class="form-control" th:value="${account.dockerId}" readonly >
     </div>
     <div>
-        <label for="dockerType">PORT</label>
-        <input type="text" id="dockerType" name="dockerType" class="form-control" th:value="${docker.dockerType}" readonly>
+        <label for="adminId" style="font-weight : bold;font-size:18px;">2. 관리자 계정</label>
+        <input type="text" id="adminId" name="adminId" class="form-control" th:value="${account.adminId}" readonly>
+        <input type="text" id="adminPw" name="adminPw" class="form-control" th:value="${account.adminPw}" readonly>
     </div>
     <div>
-        <label for="dockerIp">IP</label>
-        <input type="text" id="dockerIp" name="dockerIp" class="form-control" th:value="${docker.dockerIp}" readonly>
+        <label for="userId" style="font-weight : bold;font-size:18px;">3. 사용자 계정</label>
+        <input type="text" id="userId" name="dockerIp" class="form-control" th:value="${account.userId}" readonly>
+        <input type="text" id="userPw" name="userPw" class="form-control" th:value="${account.userPw}" readonly>
     </div>
     <div>
-        <label for="dockerPort">PORT</label>
-        <input type="text" id="dockerPort" name="dockerPort" class="form-control" th:value="${docker.dockerPort}" readonly>
+        <label for="userId2" style="font-weight : bold;font-size:18px;">4. 사용자 계정2</label>
+        <input type="text" id="userId2" name="dockerIp" class="form-control" th:value="${account.userId2}" readonly>
+        <input type="text" id="userPw2" name="userPw" class="form-control" th:value="${account.userPw2}" readonly>
+    </div>
+    <div>
+        <label for="note" style="font-weight : bold;font-size:18px;">5. 비고</label>
+        <input type="text" id="note" name="note" class="form-control" th:value="${account.note}" >
     </div>
 
     <hr class="my-4">
 
     <div class="row">
-        <div class="col">
-            <button class="w-100 btn btn-primary btn-lg"
-                    onclick="location.href='editDockerManagerForm.html'"
-                    th:onclick="|location.href='@{/dockerMain/{dockerId}/edit(dockerId=${docker.dockerId})}'|"
-                    type="button">DOCKER UPDATE</button>
-        </div>
+
         <div class="col">
             <button class="w-100 btn btn-secondary btn-lg"
                     onclick="location.href='dockerManagerList.html'"

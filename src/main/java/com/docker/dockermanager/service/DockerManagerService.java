@@ -2,7 +2,7 @@ package com.docker.dockermanager.service;
 
 import com.docker.dockermanager.entity.DockerManager;
 import com.docker.dockermanager.entity.Ping;
-import com.docker.dockermanager.repository.DockerManagerRepository;
+import com.docker.dockermanager.repository.DockerManagerRepo;
 import com.docker.dockermanager.util.HealthCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,13 +20,13 @@ public class DockerManagerService {
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     @Autowired
-    private DockerManagerRepository dockerManagerRepository;
+    private DockerManagerRepo dockerManagerRepo;
 
     public List<DockerManager> showList() {
-        return dockerManagerRepository.searchAll();
+        return dockerManagerRepo.searchAll();
     }
     public DockerManager findById(String id) {
-        return dockerManagerRepository.findById(id);
+        return dockerManagerRepo.findById(id);
     }
     public void updateById(String dockerId , DockerManager dockerManager){
         Map<String , Object> parameter = new HashMap<>();
@@ -41,7 +41,7 @@ public class DockerManagerService {
         parameter.put("dockerName", findDocker.getDockerName());
         parameter.put("dockerIp", findDocker.getDockerIp());
         parameter.put("dockerPort", findDocker.getDockerPort());
-        dockerManagerRepository.updateById(parameter);
+        dockerManagerRepo.updateById(parameter);
     }
     public void updateState(List<DockerManager> dockerManagers){
         HealthCheck healthCheck = new HealthCheck();
@@ -51,8 +51,8 @@ public class DockerManagerService {
                 if(var.getDockerName().equals(ping.getDockerName()) ){
                     var.setDockerState(ping.getDockerState().toString());
                     var.setStateMsg(ping.getStateMsg());
-                    var.setRgstDate(sdf.format(new Date()));
-                    dockerManagerRepository.updateState(var);
+                    var.setUpdateDate(sdf.format(new Date()));
+                    dockerManagerRepo.updateState(var);
                 }
             }
         }

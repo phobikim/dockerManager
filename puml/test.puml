@@ -1,0 +1,25 @@
+@startuml
+
+'=== 제목 ===
+title
+	<size:25><Docker Manager> Sequnce Diagram </size>
+end title
+
+
+skinparam ParticipantPadding 30
+
+box WAS #AliceBlue
+    actor User
+    participant "**MainController**" as MainController
+    participant "**Repository**" as Repository  #LightBlue
+    participant "**Service**" as Service  #LightBlue
+    participant "**Mapper**" as Mapper  #LightBlue
+end box
+User -[#Red]> MainController :  페이지 접속
+MainController -> Repository : call API() : list()
+Repository -> Service : call API() : showList()
+Service -> Mapper : searchAll()
+activate Mapper
+Mapper -> Mapper : DB 조회
+return <entity> DockerManager
+@enduml

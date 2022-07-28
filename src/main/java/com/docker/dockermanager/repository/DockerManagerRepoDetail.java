@@ -1,7 +1,7 @@
 package com.docker.dockermanager.repository;
 
-import com.docker.dockermanager.core.EntityMapper;
 import com.docker.dockermanager.entity.DockerManager;
+import com.docker.dockermanager.repository.Mapper.DockerManagerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -9,29 +9,29 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class DockerManagerRepository implements EntityMapper<DockerManager> {
+public class DockerManagerRepoDetail implements DockerManagerRepo {
 
     @Autowired
-    private EntityMapper entityMapper;
+    DockerManagerMapper managerMapper;
 
     @Override
     public List<DockerManager> searchAll() {
-        return entityMapper.searchAll();
+        return managerMapper.searchAll();
     }
 
     @Override
     public void updateState(DockerManager entity) {
-        entityMapper.updateState(entity);
+        managerMapper.updateState(entity);
     }
 
     @Override
     public DockerManager findById(String id) {
-        return entityMapper.findById(id);
+        return (DockerManager) managerMapper.findById(id);
     }
 
     @Override
     public void updateById(Map<String,Object> parameter) {
         System.out.println("parameter = " + parameter);
-        entityMapper.updateById(parameter);
+        managerMapper.updateById(parameter);
     }
 }

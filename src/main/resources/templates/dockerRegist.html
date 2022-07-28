@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <link th:href="@{/css/bootstrap.min.css}"
+          href="../css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 560px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="py-5 text-center">
+        <h2>Docker Registration</h2>
+    </div>
+
+    <form action="/api/docker/regist" method="post">
+        <div>
+            <label for="dockerName">도커이름</label>
+            <input type="text" id="dockerName" name="dockerName" class="form-control" placeholder="--name 옵션">
+        </div>
+
+    <hr class="my-4">
+
+    <div class="row">
+        <div class="col">
+            <button class="w-100 btn btn-secondary btn-lg"
+                    onclick="location.href='dockerPs.html'"
+                    th:onclick="|location.href='@{/api/docker/dockerPs}'|"
+                    type="button">DOCKER 목록 확인</button>
+        </div>
+        <div class="col">
+            <div class="col">
+                <button class="w-100 btn btn-primary btn-lg"
+                        type="submit">도커 생성</button>
+            </div>
+        </div>
+        <div class="col">
+            <button class="w-100 btn btn-secondary btn-lg"
+                    onclick="location.href='dockerDetail.html'"
+                    th:onclick="|location.href='@{/dockerMain}'|"
+                    type="button">CANCLE</button>
+        </div>
+    </div>
+    </form>
+</div> <!-- /container -->
+</body>
+</html>

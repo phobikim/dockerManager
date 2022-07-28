@@ -1,0 +1,358 @@
+@startuml P110_간편인증_Web2App
+
+'-----------------------------------------------------------
+' 설정
+'-----------------------------------------------------------
+'=== Header and Footer ===
+header 전자서명인증 중계
+footer
+  	Page %page% of %lastpage% at %date("yyyy-MM-dd hh:mm:ss")
+end footer
+
+'=== 제목 ===
+title
+	<size:25>P110: 간편인증 중계 </size>
+end title
+
+'=== 옵션 ===
+' 자동채번: ex) "<b>000." => 앞에 0을 채워 3자리 숫자로 표시
+autonumber "<b>(#)</b>"
+' 페이지 하단 participant box 숨기기
+'hide footbox
+
+'=== Panticipants ===
+
+skinparam ParticipantPadding 10
+skinparam BoxPadding 15
+
+box 사용자  #AliceBlue
+    actor user
+    'participant "**User**" as user <<user>>
+end box
+
+box 브라우저  #AliceBlue
+    participant "**Page**" as spPage <<Agent>>
+    participant "**JavaScript**" as js <<App>>     
+end box
+
+box 이용기관 #AliceBlue
+    participant "**spServer**" as spServer <<WAS>>
+    participant "**spSDK**" as spSDK <<SDK>>
+    database "database" as spDB <<DBMS>>
+    participant "**OACXServer**" as oacxServer <<WAS>>
+    database "database" as oacxDB <<DBMS>>
+end box
+
+box 인증사업자 #OldLace
+    participant "**CAServer**" as caServer <<WAS>>
+end box
+    
+'-----------------------------------------------------------
+' 상수
+'-----------------------------------------------------------
+'db_enc_key
+!$defaultKey = "key<sub>default</sub>"
+!$defaultAlg = "Alg<sub>default</sub>"
+
+'enc_key
+!$key_ca = "key<sub>ca</sub>"
+!$eKey_ca = "ekey<sub>ca</sub>"
+
+!$key_sp = "key<sub>sp</sub>"
+!$eKey_sp = "ekey<sub>sp</sub>"
+
+'access_key
+!$accKey_ca = "accesskey<sub>ac</sub>"
+
+'algorithm
+!$cxEncAlg = "encryptAlg<sub>cx</sub>"
+!$caEncAlg = "encryptAlg<sub>ca</sub>"
+!$caSignAlg = "signAlg<sub>ca</sub>"
+
+'msg
+!$reqData = "data<sub>request</sub>"
+!$caResData = "data<sub>caResponse</sub>"
+!$cxResData = "data<sub>cxResponse</sub>"
+
+'request attributes
+!$companyCd = "companyCode<sub>plain</sub>"
+!$serviceTycd = "serviceCode<sub>plain</sub>"
+!$userNm = "userName<sub>plain</sub>"
+!$eUserNm = "userName<sub>enc</sub>"
+!$birthday = "birthDay<sub>plain</sub>"
+!$eBirthday = "birthDay<sub>enc</sub>"
+!$phoneNo = "phoneNo<sub>plain</sub>"
+!$ePhoneNo = "phoneNo<sub>enc</sub>"
+!$devCd = "deviceCd<sub>plain</sub>"
+!$devBrowser = "deviceBrowser<sub>plain</sub>"
+!$mobileOS = "mobileOs<sub>plain</sub>"
+!$reqTitle = "requestTitle<sub>plain</sub>"
+!$reqContent = "requestContent<sub>plain</sub>"
+!$reqEndDttm = "requestEndDttm<sub>plain</sub>"
+!$signTarget = "signTarget<sub>plain</sub>"
+!$signTargetTycd = "signTargetTycd<sub>plain</sub>"
+!$reqCSPhoneNo = "requestCSPhoneNol<sub>plain</sub>"
+!$extProperties = "extProperties<sub>plain</sub>"
+!$clientIPv4 = "clientIPv4<sub>plain</sub>"
+!$clientUserAgent = "clientUserAgent<sub>plain</sub>"
+
+'response attributes
+!$resultCd = "resultCode<sub>plain</sub>"
+!$clientMsg = "clientMessage<sub>plain</sub>"
+!$systemMsg = "systemMessage<sub>plain</sub>"
+
+'result response attributes
+!$resultCd = "resultCode<sub>plain</sub>"
+!$resultDttm = "resultDttm<sub>plain</sub>"
+!$signedData = "signedData<sub>plain</sub>"
+!$CI = "CI<sub>plain</sub>"
+!$eCI = "CI<sub>encrypt</sub>"
+!$gender = "gender<sub>plain</sub>"
+!$eGender = "gender<sub>encrypt</sub>"
+
+'ui
+!$menu_auth = "menu<sub>auth</sub>"
+!$standardDialog = "Dialog<sub>auth</sub>"
+
+'CA Info
+!$targetCA = "CA<sub>target</sub>"
+
+'transaction
+!$reqTxId = "requestTxId<sub>plain</sub>"
+!$certTxId = "certTxId<sub>plain</sub>"
+!$trxStatus = "status<sub>trx</sub>"
+
+'static
+!$REQ_AUTH = "1"
+!$RES_AUTH = "2"
+!$REQ_RESULT = "3"
+!$RES_RESULT = "4"
+!$COMPLETED = "5"
+
+'data
+!$userCert = "cert<sub>user</sub>"
+!$userPk = "publicKey<sub>user</sub>"
+!$userSk = "privateKey<sub>user</sub>"
+!$signature = "signature<sub>user</sub>"
+
+'etc
+!$time = "time<sub>log</sub>"
+
+'variable
+!$relayStaticCache = "relayStaticCache<sub>boolean</sub>" 
+!$spStaticCache = "spStaticCache<sub>boolean</sub>" 
+!$isEncrypt = "isEncrypt<sub>boolean</sub>"
+
+'-----------------------------------------------------------
+' 내용
+'-----------------------------------------------------------
+
+== P110-1: 간편인증 요청 ==
+user -> spPage : select menu
+activate spPage
+    spPage -> js : $serviceTycd
+deactivate spPage
+activate js
+    note left 
+        <color red>현재 버전에서 넘어오는</color>    
+        <color red>파라미터 확인 필요</color>
+    end note
+
+    js -> oacxServer : request $standardDialog
+deactivate js
+
+activate oacxServer
+    oacxServer -> oacxServer : read env-file
+    oacxServer --> js : $standardDialog
+    note left : <color red>현재 프론트엔드 상태 확인 필요 </color>
+deactivate oacxServer
+
+activate js
+    js -> user : dispaly $standardDialog
+deactivate js
+
+user --> js : input($userNm, $birthday, $phoneNo, agreement)
+activate js
+    js -> oacxServer : tls_relay_authen\n($serviceTycd = 1, $phoneNo, $userNm, $birthday,\n$devCd=PC, \n$devBrowser=WB, $signTarget, $signTargetTycd = 4, $targetCA = userSelectedCA)
+deactivate js
+
+activate oacxServer
+    oacxServer -> oacxServer : thread lock
+    alt $relayStaticCache = false
+        oacxServer -> oacxDB : select key_table($targetCA)
+        activate oacxDB
+        return {$companyCd, $accKey_ca, $eKey_ca, \n$eKey_sp, $caEncAlg, $caSignAlg, $cxEncAlg}
+
+        oacxServer -> oacxServer : $ $relayStaticCache = true
+        note over oacxServer, oacxDB : <color red> $relayStaticCache 를 true 로 변경하고 관련 키 정보를 캐싱 </color>
+        alt $eKey_ca is valid
+            oacxServer -> oacxServer : $key_ca =\ndecrypt($defaultAlg, $defaultKey, $eKey_ca)
+        end
+        
+        alt $eKey_sp is valid
+            oacxServer -> oacxServer : $key_sp =\ndecrypt($defaultAlg, $defaultKey, $eKey_sp)
+        end
+
+     end
+    oacxServer -> oacxServer : thread unlock
+
+    note left : <color red> 인증사업자 규격에 맞춰서 암호화 수행 </color>
+    oacxServer -> oacxServer : $eUserNm = \necrypt($caEncAlg, $key_ca, $userNm)
+    oacxServer -> oacxServer : $eBirthday = \necrypt($caEncAlg, $key_ca, $birthday)
+    oacxServer -> oacxServer : $ePhoneNo = \necrypt($caEncAlg, $key_ca, $phoneNo)
+
+    oacxServer -> oacxServer : $clientIPv4 = ipInfo, $clientUserAgent = browserInfo
+    oacxServer -> oacxServer : $extProperties = make($clientIPv4, $clientUserAgent)
+    oacxServer -> oacxServer : $reqTxId = secureRandom()
+    oacxServer -> oacxServer : $signTarget = nonce, $serviceTycd = 1, $signTargetTycd = 4
+    
+    
+    note left : <color red> 로그 정보로 사용자 정보 남길지 체크 필요</color>
+   
+    oacxServer -> oacxServer : $reqData =\nmake($companyCd, $serviceTycd, $ePhoneNo,\n$eUserNm, $eBirthday, $devCd, $devBrowser,\n$reqTitle, $reqContent, $reqEndDttm, $signTarget, $reqTxId,\n$signTargetTycd, $reqCSPhoneNo = 1588-1234, $extProperties)
+    oacxServer -> oacxDB : insert transaction_table\n(key = $reqTxId, $reqEndDttm, $signTarget,\n$trxStatus = $REQ_AUTH, $targetCA)
+    activate oacxDB
+    return Success
+
+    oacxServer -> oacxDB : insert log_table($reqTxId, $REQ_AUTH, $time,\n$signTarget, $reqEndDttm)
+    activate oacxDB
+    return : Success
+
+    oacxServer -> caServer : tls_request_authen($accKey_ca, $reqData)
+    activate caServer
+        caServer --> oacxServer : $caResData
+    deactivate caServer
+
+    oacxServer -> oacxServer : check_timeover($reqEndDttm, currenttime)
+    oacxServer -> oacxDB : update transaction_table\n(key = $caResData.$reqTxId, $caResData.$certTxId, $caResData.$resultCd,\n$caResData.$clientMsg, $caResData.$systemMsg, $trxStatus = $RES_AUTH)
+    activate oacxDB
+    return Success
+    oacxServer -> oacxDB : insert log_table($reqTxId, $RES_AUTH, $time, $caResData.$certTxId,\n$caResData.$resultCd, $caResData.$clientMsg, $caResData.$systemMsg)
+    activate oacxDB
+    return Success
+    oacxServer --> js : $reqTxId, $resultCd
+deactivate oacxServer
+
+activate js
+return {resultCode에 기반한 에러메시지 표시\nor 정상일시 OK button}
+|||
+== P110-2: 간편인증 결과 확인 ==
+user -> js : click OK Button
+    js -> oacxServer : tls_relay_authen_result($reqTxId)
+deactivate js
+
+activate oacxServer
+    oacxServer -> oacxDB : select transaction_table($reqTxId)
+    activate oacxDB
+    return {$certTxId, $reqEndDttm}
+
+    note left : <color red> $trxStatus 가 $RES_AUTH 가 아니면 에러코드 반환 필요 </color>
+    alt $trxStatus is not $RES_AUTH
+        oacxServer -> js : transaction error message
+    end
+
+    oacxServer -> oacxServer : check timeover($reqEndDttm, currenttime)
+    oacxServer -> oacxServer : $clientIPv4 =\nipInfo, $clientUserAgent = browserInfo
+    oacxServer -> oacxServer : $extProperties =\nmake($clientIPv4, $clientUserAgent)
+    oacxServer -> oacxServer : $reqData =\nmake($reqTxId, $certTxId, $extProperties)
+
+    oacxServer -> oacxDB : update transaction_table\n(key=$reqTxId, $trxStatus = $REQ_RESULT, $time)
+    activate oacxDB
+    return Success
+    oacxServer -> oacxDB : insert log_table($reqTxId, $REQ_RESULT, $time, $reqEndDttm)
+    activate oacxDB
+    return Success
+    oacxServer -> caServer : tls_authen_result($accKey_ca, $reqData)
+deactivate oacxServer
+
+activate caServer
+    caServer --> oacxServer :$caResData, $resultCd
+deactivate caServer
+
+activate oacxServer
+    alt $reqTxId is not valid
+        oacxServer -> js : transaction error message
+    end
+
+    alt $certTxId is not valid
+        oacxServer -> js : transaction error message
+    end
+
+    oacxServer -> oacxServer : $userCert, \n$signature = getData($caResData.$signedData)
+    oacxServer -> oacxServer : $userPk = getPublicKey($userCert)
+    oacxServer -> oacxServer : result = \nverify($caSignAlg, $userPk, \ndecode($signature), $signTarget)
+
+    alt resut is not valid
+        oacxServer -> js : signature error message
+    end
+        
+    oacxServer -> oacxServer : $CI = \ndecrypt($caEncAlg, $key_ca, $caResData.$eCI)
+    oacxServer -> oacxServer : $userNm = \ndecrypt($caEncAlg, $key_ca, $caResData.$eUserNm)
+    oacxServer -> oacxServer : $birthday = \ndecrypt($caEncAlg, $key_ca, $caResData.$eBirthday)
+    oacxServer -> oacxServer : $phoneNo = \ndecrypt($caEncAlg, $key_ca, $caResData.$ePhoneNo)
+    oacxServer -> oacxServer : $gender = \ndecrypt($caEncAlg, $key_ca, $caResData.$eGender)
+
+    alt $key_sp is valid
+        oacxServer -> oacxServer : $eCI = \nencrypt($cxEncAlg, $key_sp, $CI)
+        oacxServer -> oacxServer : $eUserNm = \nencrypt($cxEncAlg, $key_sp, $userNm)
+        oacxServer -> oacxServer : $eBirthday = \nencrypt($cxEncAlg, $key_sp, $birthday)
+        oacxServer -> oacxServer : $ePhoneNo = \nencrypt($cxEncAlg, $key_sp, $phoneNo)
+        oacxServer -> oacxServer : $eGender = \nencrypt($cxEncAlg, $key_sp, $gender)
+        oacxServer -> oacxServer : $cxResData = \nmake($reqTxId, $targetCA, \n$eCI, $eUserNm, $eBirthday, $ePhoneNo, $eGender)
+    else $key_sp is not valid
+        oacxServer -> oacxServer : $cxResData = \nmake($reqTxId, $targetCA, \n$CI, $userNm, $birthday, $phoneNo, $gender)
+    end
+
+    oacxServer -> oacxDB : delete transaction_table\n(key=$reqTxId)
+    activate oacxDB
+    return Success
+    oacxServer -> oacxDB : insert log_table($reqTxId, $RES_RESULT, $caResData.$resultDttm)
+    activate oacxDB
+    return Success
+    oacxServer -> js : $cxResData
+deactivate oacxServer
+activate js
+    js -> spPage : $cxResData
+deactivate js
+|||
+
+== P110-3: spServer 결과 확인 ==
+activate spPage
+    spPage -> spServer : $cxResData
+deactivate spPage
+
+activate spServer
+
+    alt $isEncrypt is true
+        spServer -> spSDK : verify\n($cxResData)
+    'deactivate spServer
+        activate spSDK
+            spSDK -> spSDK : thread lock
+            alt $spStaticCache = false
+                spSDK -> spSDK : $eKey_sp = \nread(walletFile, $cxResData.$targetCA)
+                spSDK -> spSDK : $key_sp =\ndecrypt($encAlg,\npassword, $eKey_sp)
+
+                spSDK -> spSDK : $spStaticCache = true
+                note right spSDK : <color red> $spStaticCache 를 true 로 변경하고 관련 키 정보를 캐싱 </color>
+            end
+            spSDK -> spSDK : thread unlock
+
+            '복호화
+            alt key_sp is valid
+                spSDK -> spSDK : $CI = \ndecrypt($cxEncAlg, $key_sp, $cxResData.$eCI)
+                spSDK -> spSDK : $userNm = \nencrypt($cxEncAlg, $key_sp, $cxResData.$eUserNm)
+                spSDK -> spSDK : $birthday = \nencrypt($cxEncAlg, $key_sp, $cxResData.$eBirthday)
+                spSDK -> spSDK : $phoneNo = \nencrypt($cxEncAlg, $key_sp, $cxResData.$ePhoneNo)
+                spSDK -> spSDK : $gender = \nencrypt($cxEncAlg, $key_sp, $cxResData.$eGender)
+            end
+
+            spSDK --> spServer : $CI, $userNm, $birthday, $phoneNo, $gender
+        deactivate spSDK
+    end
+    spServer --> spPage : provide service
+deactivate spServer
+activate spPage
+    spPage -> user : display service page
+deactivate spPage
+|||
+@enduml

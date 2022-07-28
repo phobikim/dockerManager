@@ -1,12 +1,17 @@
 package com.docker.dockermanager.controller;
 
+import com.docker.dockermanager.entity.AccountManager;
 import com.docker.dockermanager.entity.DockerManager;
+import com.docker.dockermanager.repository.AccountManagerRepo;
+import com.docker.dockermanager.service.AccountManagerService;
 import com.docker.dockermanager.service.DockerManagerService;
 import com.docker.dockermanager.util.HealthCheck;
 import com.sun.org.apache.xpath.internal.operations.Mod;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,16 +24,29 @@ import java.util.List;
 @Controller
 @RequestMapping("/dockerMain")
 public class MainController {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Autowired
     private DockerManagerService dockerManagerService;
+    @Autowired
+    private AccountManagerService accountManagerService;
 
     private HealthCheck healthCheck;
-
+    @GetMapping("/Auth")
+    public String login(){
+        return "login";
+    }
+    @PostMapping("/Auth")
+    public String checkAuth(@RequestParam("id") String id , @RequestParam("pw") String pw) {
+        System.out.println("id , pw = " + id + pw);
+        return "redirect:/dockerMain";
+    }
     @ApiOperation(value = "도커의 LIST 를 조회하는 메소드")
     @GetMapping("")
     public String list(Model model){
         List<DockerManager> dockerManagers = dockerManagerService.showList();
+
         model.addAttribute("dockerMangers" , dockerManagers);
+        logger.trace("로깅 테스트 : debug");
 //        return "../static/index";
         return "dockerManagerList";
     }
@@ -40,8 +58,9 @@ public class MainController {
         if(dockerId.equals("favicon.ico")){
             return "dockerManagerList";
         }
-        DockerManager docker = dockerManagerService.findById(dockerId);
-        model.addAttribute("docker" , docker);
+//        DockerManager docker = dockerManagerService.findById(dockerId);
+        AccountManager account = accountManagerService.findById(dockerId);
+        model.addAttribute("account" , account);
         return "dockerDetail";
     }
 

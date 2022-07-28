@@ -2,6 +2,7 @@ package com.docker.dockermanager.util;
 
 import com.docker.dockermanager.entity.DockerManager;
 import com.docker.dockermanager.entity.Ping;
+import com.docker.dockermanager.message.DockerCode;
 import com.docker.dockermanager.service.DockerManagerService;
 import com.docker.dockermanager.type.STATE;
 import org.jetbrains.annotations.NotNull;
@@ -23,19 +24,20 @@ public class HealthCheck {
     public List<Ping> callCheckMethod(List<DockerManager> dockerManagers) {
         try{
             for(DockerManager var : dockerManagers){
-                result.add(CheckAndUpdateDockerState(var));
+                result.add(checkAndUpdateDockerState(var));
             }
         }catch (Exception e){
             e.printStackTrace();
         }
         return result;
     }
-    public Ping CheckAndUpdateDockerState(@NotNull DockerManager dockerManagers) throws IOException {
+    public Ping checkAndUpdateDockerState(@NotNull DockerManager dockerManagers) throws IOException, DockerException {
         Socket socket = new Socket();
         String pingState = STATE.STOP.getCode();
         int timeout = 2000;
         if (Integer.parseInt(dockerManagers.getDockerPort()) >= 65535) {
-            System.out.println("port range error = " + dockerManagers.getDockerPort() + "greater than" + 65535);
+            pingState = STATE.ERROR.getCode();
+            new Ping(dockerManagers.getDockerName(), socket.isConnected(), pingState);
         } else {
             try {
                 socket.connect(new InetSocketAddress(dockerManagers.getDockerIp(), Integer.parseInt(dockerManagers.getDockerPort())), timeout);

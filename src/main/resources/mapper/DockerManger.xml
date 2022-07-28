@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.docker.dockermanager.core.EntityMapper">
+<mapper namespace="com.docker.dockermanager.repository.Mapper.DockerManagerMapper">
 
     <select id="searchAll" resultType="DockerManager">
         select * from docker_manager
@@ -19,7 +19,7 @@
         set
         docker_state = #{dockerState},
         state_msg    = #{stateMsg},
-        rgst_date    = #{rgstDate}
+        update_date    = #{updateDate}
         where
         docker_ip = #{dockerIp} and docker_port = #{dockerPort}
     </update>

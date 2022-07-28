@@ -1,13 +1,13 @@
-package com.docker.dockermanager.core;
+package com.docker.dockermanager.repository.Mapper;
 
-import com.docker.dockermanager.entity.DockerManager;
+import com.docker.dockermanager.entity.Entity;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 import java.util.Map;
 
-@Mapper
-public interface EntityMapper<T extends DockerManager> {
+
+public interface EntityMapper<T extends Entity> {
     //table = dockerManger
     public List<T> searchAll();
     public void updateState(T entity);
