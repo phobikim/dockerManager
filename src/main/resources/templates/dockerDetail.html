@@ -54,9 +54,9 @@
         <input type="text" id="dockerId" name="dockerId" class="form-control" th:value="${account.dockerId}" readonly >
     </div>
     <div>
-        <label for="adminId" style="font-weight : bold;font-size:18px;">2. 관리자 계정</label>
-        <input type="text" id="adminId" name="adminId" class="form-control" th:value="${account.adminId}" readonly>
-        <input type="text" id="adminPw" name="adminPw" class="form-control" th:value="${account.adminPw}" readonly>
+        <label for="adminId" style="font-weight : bold;font-size:18px;">2. 관리자 계정</label><br>
+        ID : <input type="text" id="adminId" name="adminId" class="form-control" th:value="${account.adminId}" readonly><br>
+        PW : <input type="text" id="adminPw" name="adminPw" class="form-control" th:value="${account.adminPw}" readonly>
     </div>
     <div>
         <label for="userId" style="font-weight : bold;font-size:18px;">3. 사용자 계정</label>
@@ -80,7 +80,7 @@
         <div class="col">
             <button class="w-100 btn btn-secondary btn-lg"
                     onclick="location.href='dockerManagerList.html'"
-                    th:onclick="|location.href='@{/dockerMain}'|"
+                    th:onclick="|location.href='@{/docker/home}'|"
                     type="button">TO THE MAIN</button>
         </div>
     </div>

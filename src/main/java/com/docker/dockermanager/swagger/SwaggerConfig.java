@@ -32,7 +32,7 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("DOCKER MANAGER API")
                 .description("도커 API 상세 소개")
-                .contact(new Contact("Main Page", "http://localhost:9091/dockerMain", "-"))
+                .contact(new Contact("Main Page", "http://localhost:9091/docker/home", "-"))
                 .version("1.0")
                 .build();
     }

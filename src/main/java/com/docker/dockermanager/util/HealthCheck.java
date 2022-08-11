@@ -40,7 +40,7 @@ public class HealthCheck {
             new Ping(dockerManagers.getDockerName(), socket.isConnected(), pingState);
         } else {
             try {
-                socket.connect(new InetSocketAddress(dockerManagers.getDockerIp(), Integer.parseInt(dockerManagers.getDockerPort())), timeout);
+                socket.connect(new InetSocketAddress(dockerManagers.getServerIp(), Integer.parseInt(dockerManagers.getDockerPort())), timeout);
                 pingState = STATE.RUNNING.getCode();
             } catch (SocketTimeoutException e) {
                 pingState = STATE.STOP.getCode();

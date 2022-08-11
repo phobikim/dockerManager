@@ -4,17 +4,19 @@
     <meta charset="utf-8">
     <link th:href="@{/css/bootstrap.min.css}"
           href="../css/bootstrap.min.css" rel="stylesheet">
-
+    <link th:href="@{/css/login.css}"
+          href="../css/login.css" rel="stylesheet">
 </head>
 
 <body>
+
 <div class="container" style="max-width: 1000px">
     <div class="py-5 text-center">
         <h2>도커 목록</h2>
     </div>
     <div class="m-4 float-right">
         <button class="btn btn-info active"
-                th:onclick="|location.href='@{/dockerMain/healthCheck}'|"
+                th:onclick="|location.href='@{/docker/containers/health-check}'|"
                 type="button">통신 확인</button>
         <button class="btn btn-warning ml-2 float-right active"
                 th:onclick="|location.href='@{/swagger-ui/#/}'|"
@@ -23,36 +25,59 @@
                 th:onclick="|location.href='@{/api/docker/regist}'|"
                 type="button">도커 생성</button>
     </div>
+
+    <hr class="my-4">
+    <div class="m-4">
+        <button type="button" class="btn btn-success btn-lg"
+                th:onclick="|location.href='@{/docker/home}'|">ALL</button>
+        <button type="button" class="btn btn-success btn-lg"
+                th:onclick="|location.href='@{/docker/server/1}'|">192.168.0.182</button>
+        <button type="button" class="btn btn-success btn-lg"
+                th:onclick="|location.href='@{/docker/server/2}'|">192.168.0.183</button>
+        <button type="button" class="btn btn-success btn-lg"
+                th:onclick="|location.href='@{/docker/server/3}'|">192.168.0.105</button>
+    </div>
     <hr class="my-4">
     <div>
         <table class="table">
             <thead>
             <tr>
-                <th>ID</th>
-                <th>TYPE</th>
-                <th>NAME</th>
+                <th>순번</th>
+                <th>타입</th>
+                <th>이름</th>
                 <th>IP</th>
                 <th>PORT</th>
-                <th>STATE</th>
-                <th>REGISTER DATE</th>
-                <th>UPDATE DATE</th>
+                <th>상태<th>
+                <th>등록 일자</th>
+                <th>업데이트 일자</th>
+                <th>사용여부</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="docker ,stat : ${dockerMangers}">
+            <tr th:each="docker ,stat : ${dockerMangers}" th:if="${docker.isUse == 'y'}">
                 <td th:text="${stat.count}"></td>
                 <td th:text="${docker.dockerType}"></td>
-                <td><a th:href="@{|/dockerMain/${docker.dockerId}|}" th:text="${docker.dockerName}">docker name</a></td>
-                <td><a th:href="@{/dockerMain/{dockerId}(dockerId=${docker.dockerId})}" th:text="${docker.dockerIp}">docker ip</a></td>
+                <td><a th:href="@{|/docker/containers/${docker.dockerId}|}" th:text="${docker.dockerName}">docker name</a></td>
+                <td><a th:href="@{/docker/containers/{dockerId}(dockerId=${docker.dockerId})}" th:text="${docker.serverIp}">server ip</a></td>
                 <td th:text="${docker.dockerPort}"></td>
                 <td th:text="${docker.stateMsg}"></td>
                 <td th:text="${docker.rgstDate}"></td>
                 <td th:text="${docker.updateDate}"></td>
+                <td th:text="${docker.isUse}"></td>
             </tr>
             </tbody>
         </table>
     </div>
 
 </div> <!-- /container -->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let member = /*[[ ${member} ]]*/;
+    /*]]*/
+    console.log(member);
+    function setLink(name) {
+        console.log(name)
+    }
+</script>
 </body>
 </html>

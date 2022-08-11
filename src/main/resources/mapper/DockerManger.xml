@@ -14,6 +14,12 @@
         docker_id = #{dockerId}
     </select>
 
+    <select id="searchServer" parameterType="String" resultType="DockerManager">
+        select * from docker_manager
+        where
+        server_ip = #{serverIp}
+    </select>
+
     <update id="updateState" parameterType="DockerManager">
         update docker_manager
         set
@@ -21,14 +27,14 @@
         state_msg    = #{stateMsg},
         update_date    = #{updateDate}
         where
-        docker_ip = #{dockerIp} and docker_port = #{dockerPort}
+        server_ip = #{serverIp} and docker_port = #{dockerPort}
     </update>
 
     <update id="updateById" parameterType="hashmap">
         update docker_manager
         set
         docker_name = #{dockerName},
-        docker_ip   = #{dockerIp},
+        server_ip   = #{serverIp},
         docker_port = #{dockerPort}
         where
         docker_id = #{dockerId}

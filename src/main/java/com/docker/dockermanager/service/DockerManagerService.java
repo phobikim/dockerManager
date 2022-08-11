@@ -25,6 +25,10 @@ public class DockerManagerService {
     public List<DockerManager> showList() {
         return dockerManagerRepo.searchAll();
     }
+
+    public List<DockerManager> showSelectServer(String serverIp) {
+        return dockerManagerRepo.searchServer(serverIp);
+    }
     public DockerManager findById(String id) {
         return dockerManagerRepo.findById(id);
     }
@@ -33,13 +37,13 @@ public class DockerManagerService {
 
         DockerManager findDocker = findById(dockerId);
         findDocker.setDockerName(dockerManager.getDockerName());
-        findDocker.setDockerIp(dockerManager.getDockerIp());
+        findDocker.setServerIp(dockerManager.getServerIp());
         findDocker.setDockerPort(dockerManager.getDockerPort());
 
 
         parameter.put("dockerId", dockerId);
         parameter.put("dockerName", findDocker.getDockerName());
-        parameter.put("dockerIp", findDocker.getDockerIp());
+        parameter.put("serverIp", findDocker.getServerIp());
         parameter.put("dockerPort", findDocker.getDockerPort());
         dockerManagerRepo.updateById(parameter);
     }

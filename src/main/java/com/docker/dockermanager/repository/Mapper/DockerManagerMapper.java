@@ -10,7 +10,7 @@ import java.util.Map;
 public interface DockerManagerMapper extends EntityMapper<DockerManager> {
     @Override
     List<DockerManager> searchAll();
-
+    List<DockerManager> searchServer(String serverIp);
     @Override
     void updateState(DockerManager entity);
 
@@ -19,4 +19,5 @@ public interface DockerManagerMapper extends EntityMapper<DockerManager> {
 
     @Override
     void updateById(Map<String, Object> parameter);
+
 }

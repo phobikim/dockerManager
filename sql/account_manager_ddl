@@ -1,0 +1,14 @@
+-- DOCKER.account_manager definition
+
+CREATE TABLE `account_manager` (
+  `docker_id` varchar(100) DEFAULT NULL,
+  `admin_id` varchar(100) DEFAULT NULL,
+  `admin_pw` varchar(100) DEFAULT NULL,
+  `user_id` varchar(100) DEFAULT NULL,
+  `user_pw` varchar(100) DEFAULT NULL,
+  `user_id2` varchar(100) DEFAULT NULL,
+  `user_pw2` varchar(100) DEFAULT NULL,
+  `note` varchar(100) DEFAULT NULL,
+  KEY `account_manager_FK` (`docker_id`),
+  CONSTRAINT `account_manager_FK` FOREIGN KEY (`docker_id`) REFERENCES `docker_manager` (`docker_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

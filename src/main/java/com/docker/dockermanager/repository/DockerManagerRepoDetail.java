@@ -34,4 +34,10 @@ public class DockerManagerRepoDetail implements DockerManagerRepo {
         System.out.println("parameter = " + parameter);
         managerMapper.updateById(parameter);
     }
+
+    @Override
+    public List<DockerManager> searchServer(String serverIp) {
+        System.out.println("serverIp = " + serverIp);
+        return managerMapper.searchServer(serverIp);
+    }
 }

@@ -8,7 +8,7 @@ public class DockerManager implements Entity {
     private String dockerId;
     private String dockerName;
     private String dockerType;
-    private String dockerIp;
+    private String serverIp;
     private String dockerPort;
     private String dockerState;
     private String stateMsg;
@@ -18,5 +18,6 @@ public class DockerManager implements Entity {
     private String accountId;
     private String accountpw;
     private Ping ping;
+    private String isUse;
 
 }

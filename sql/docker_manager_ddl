@@ -1,4 +1,4 @@
--- docker.docker_manager definition
+-- DOCKER.docker_manager definition
 
 CREATE TABLE `docker_manager` (
   `docker_id` varchar(20) NOT NULL,
@@ -9,5 +9,7 @@ CREATE TABLE `docker_manager` (
   `docker_state` varchar(100) DEFAULT NULL,
   `state_msg` varchar(100) DEFAULT NULL,
   `rgst_date` varchar(100) DEFAULT NULL,
+  `update_date` varchar(100) DEFAULT NULL,
+  `version` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`docker_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

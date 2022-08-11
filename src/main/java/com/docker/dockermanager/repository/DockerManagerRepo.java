@@ -21,4 +21,6 @@ public interface DockerManagerRepo extends DockerManagerMapper {
 
     @Override
     void updateById(Map<String, Object> parameter);
+
+    List<DockerManager> searchServer(String serverIp);
 }
